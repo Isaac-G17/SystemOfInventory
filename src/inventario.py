@@ -1,7 +1,7 @@
 inventario = [
     {
       "nombre": "Queso",
-      "precio": 200,
+      "precio": 2000000,
       "cantidad": 3
     },
     {
@@ -61,7 +61,6 @@ def agregar_producto():
                         print()
                         continue
                     break
-
                 except ValueError:
                     print("Error: Tienes que ingresar un valor númerico")
                     print()
@@ -75,48 +74,39 @@ def agregar_producto():
             inventario.append(producto)
                 
             print("Producto agregado correctamente.\n")
-           
             continuar = input("¿Quiere agregar otro producto? (Si/No): ").lower()
 
             print()
         
             if continuar not in ("si","s","yes"):
                 print("------Volviendo al menu-------\n".upper())
-                break  
+            break  
 
 def mostrar_inventario():
     print("-----Mostrando inventario-----\n".upper())
-    
-    # if not inventario:
-    #         print ("Inventario Vacio\n")
-
-    # else:
-    #     for p in inventario:
-    #         print(f"| Producto: {p['nombre'].upper()} | Precio: ${p['precio']} | Cantidad: {p['cantidad']} |")
-    #         print("-"*50)
-    #         print()
-    
-    
-    print("+---------------+----------+-----------+")
-    print("| PRODUCTO      | PRECIO   | CANTIDAD  |")
-    print("+---------------+----------+-----------+")
+        
+    print("+---------------+-------------+-----------+")
+    print("| PRODUCTO      | PRECIO      | CANTIDAD  |")
+    print("+---------------+-------------+-----------+")
     if not inventario:
             print ("Inventario Vacio\n")
 
     else:
         for p in inventario:
-            print(f"| {p['nombre']:<13} | ${p['precio']:<7} | {p['cantidad']:<9} |")
+            print(f"| {p['nombre']:<13} | ${p['precio']:<10} | {p['cantidad']:<9} |")
 
-    print("+---------------+----------+-----------+\n")
+    print("+---------------+-------------+-----------+\n")
     print("------Volviendo al menu-------\n".upper())
 
 
 def calcular_estadisticas():
+    print("----Caculando estadisticas de inventario----\n".upper())
+
     total_productos = len(inventario)
     total_precio = 0
     total_unidades = 0
 
-     # Operacion matemática para sacar el total
+    # Operacion matemática para tener las estadisticas de inventario
     for p in inventario:
         total_precio += p['precio'] * p['cantidad']
         total_unidades += p['cantidad']
@@ -125,4 +115,5 @@ def calcular_estadisticas():
     print(f"El total de productos es: {total_productos}\n")
     print(f"La cantidad total de productos registrados es: {total_unidades}\n")
     print(f"El valor total del inventario es: ${total_precio}\n")
-    
+
+    print("-------------Volviendo al menú--------------\n".upper())
