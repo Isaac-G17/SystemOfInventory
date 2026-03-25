@@ -1,6 +1,6 @@
 inventario = [
-    #{"nombre": "Queso", "precio": 200, "cantidad": 5},
-    #{"nombre": "Lulo", "precio": 300, "cantidad": 4},
+    {"nombre": "Queso", "precio": 200, "cantidad": 5},
+    {"nombre": "lulo", "precio": 300, "cantidad": 4},
 ]
 
 
@@ -63,7 +63,7 @@ def buscar_producto(inventario, nombre):
         None: Si el producto no existe.
     """
     for p in inventario:
-        if p["nombre"].lower() == nombre.lower():
+        if p["nombre"].lower() == nombre:
             return p
     return None
 

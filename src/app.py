@@ -6,28 +6,30 @@ def pedir_nombre():
     """
     nombre = ""
 
-    while nombre.strip() == "" or not nombre.replace(" ", "").isalpha():
-        nombre = input("Ingrese el nombre de su producto:")
+    while nombre == "" or not nombre.replace(" ", "").isalpha():
+        nombre = input("Ingrese el nombre del producto: ").lower()
+        print()
 
-        if nombre.strip() == "":
-            print("No dejes el campo vacío\n")
+        if nombre == "":
+            print("Alerta: No dejes el campo vacío\n")
         elif not nombre.replace(" ", "").isalpha():
-            print("Solo se permiten letras\n")
+            print("Error: Solo se permiten letras\n")
 
     return nombre
 
 def pedir_float(mensaje):
     valor = -1
 
-    while valor < 0:
+    while valor <= 0:
         try:
             valor = float(input(mensaje))
 
-            if valor < 0:
-                print("Debe ser mayor o igual a 0\n")
+            if valor <= 0:
+                print("Alerta: El precio debe ser mayor a 0\n")
+                
 
         except ValueError:
-            print("Entrada inválida\n")
+            print("Error: Entrada inválida solo se permiten números\n")
             valor = -1  
     return valor
 
@@ -43,15 +45,15 @@ def pedir_int(mensaje):
     """
     valor = -1
 
-    while valor < 0:
+    while valor <= 0:
         try:
             valor = int(input(mensaje))
 
-            if valor < 0:
-                print("Debe ser mayor o igual a 0\n")
+            if valor <= 0:
+                print("Alerta: La cantidad debe ser mayor a 0\n")
 
         except ValueError:
-            print("Entrada inválida\n")
+            print("Error: Entrada inválida solo se permiten números\n")
             valor = -1  
 
     return valor
@@ -110,28 +112,59 @@ def menu():
             mostrar_inventario(inventario)
 
         elif accion == 3:
-            nombre = input("Buscar producto: ")
-            producto = buscar_producto(inventario, nombre)
+            print("-------Buscar producto-------\n".upper())
+            continuar = "si"
+            while continuar in ("si", "s", "yes"):
+                nombre = pedir_nombre()
+                producto = buscar_producto(inventario, nombre)
+                
+                if producto:
+                    print(f"{producto}\n")
+                else:
+                    print(f"Producto no encontrado\n")
 
-            if producto:
-                print(producto, "\n")
-            else:
-                print("Producto no encontrado\n")
+                continuar = input("¿Quiere buscar otro producto? (Si/No): ").lower()
+
+                print()
+                
+                if continuar not in ("si", "s", "yes"):
+                    print("------Volviendo al menu-------\n".upper())
 
         elif accion == 4:
-            nombre = input("Producto a actualizar: ")
+            print("------Actulizar producto------\n".upper())
+            continuar = "si"
+            while continuar in ("si", "s", "yes"):
+                nombre = pedir_nombre()
+                nuevo_precio = input("Nuevo precio (enter para omitir): $")
+                print()
+                nueva_cantidad = input("Nueva cantidad (enter para omitir): ")
+                print()
 
-            nuevo_precio = input("Nuevo precio (enter para omitir): ")
-            nueva_cantidad = input("Nueva cantidad (enter para omitir): ")
+                nuevo_precio = float(nuevo_precio) if nuevo_precio else None
+                nueva_cantidad = int(nueva_cantidad) if nueva_cantidad else None
 
-            nuevo_precio = float(nuevo_precio) if nuevo_precio else None
-            nueva_cantidad = int(nueva_cantidad) if nueva_cantidad else None
+                actualizar_producto(inventario,nombre,nuevo_precio, nueva_cantidad)
 
-            actualizar_producto(inventario, nombre, nuevo_precio, nueva_cantidad)
+                continuar = input("¿Quiere actualizar otro producto? (Si/No): ").lower()
+
+                print()
+
+                if continuar not in ("si", "s", "yes"):
+                    print("------Volviendo al menu-------\n".upper())
 
         elif accion == 5:
-            nombre = input("Producto a eliminar: ")
-            eliminar_producto(inventario, nombre)
+            print("------Eliminar producto------\n".upper())
+            continuar = "si"
+            while continuar in ("si", "s", "yes"):
+                nombre = pedir_nombre()
+                eliminar_producto(inventario, nombre)
+
+                continuar = input("¿Quiere eliminar otro producto? (Si/No): ").lower()
+                
+                print()
+
+                if continuar not in ("si", "s", "yes"):
+                    print("------Volviendo al menu-------\n".upper())
 
         elif accion == 6:
             print("----Estadisticas de inventario----\n".upper())
