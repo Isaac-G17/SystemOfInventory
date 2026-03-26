@@ -1,4 +1,11 @@
 from src.servicios import *
+from src.style_msg import exito,alerta,error
+
+inventario = [
+    {"nombre": "Queso", "precio": 200, "cantidad": 5},
+    {"nombre": "lulo", "precio": 300, "cantidad": 4},
+]
+
 
 def pedir_nombre():
     """
@@ -11,11 +18,12 @@ def pedir_nombre():
         print()
 
         if nombre == "":
-            print("Alerta: No dejes el campo vacío\n")
+            alerta("Alerta: No dejes el campo vacío\n")
         elif not nombre.replace(" ", "").isalpha():
-            print("Error: Solo se permiten letras\n")
+            error("Error: Solo se permiten letras\n")
 
     return nombre
+
 
 def pedir_float(mensaje):
     valor = -1
@@ -25,13 +33,13 @@ def pedir_float(mensaje):
             valor = float(input(mensaje))
 
             if valor <= 0:
-                print("Alerta: El precio debe ser mayor a 0\n")
-                
+                alerta("Alerta: El precio debe ser mayor a 0\n")
 
         except ValueError:
-            print("Error: Entrada inválida solo se permiten números\n")
-            valor = -1  
+            error("Error: Entrada inválida solo se permiten números\n")
+            valor = -1
     return valor
+
 
 def pedir_int(mensaje):
     """
@@ -50,13 +58,14 @@ def pedir_int(mensaje):
             valor = int(input(mensaje))
 
             if valor <= 0:
-                print("Alerta: La cantidad debe ser mayor a 0\n")
+                alerta("Alerta: La cantidad debe ser mayor a 0\n")
 
         except ValueError:
-            print("Error: Entrada inválida solo se permiten números\n")
-            valor = -1  
+            error("Error: Entrada inválida solo se permiten números\n")
+            valor = -1
 
     return valor
+
 
 def menu():
     """
@@ -80,26 +89,32 @@ def menu():
         print("| 8 → Cargar CSV                 |")
         print("| 9 → Salir                      |")
         print("-" * 34)
-
         try:
             accion = int(input("Seleccione una opción: "))
+
             print()
+
         except ValueError:
-            print("Opción inválida\n")
+            error("Opción inválida\n")
             continue
 
         if accion == 1:
             print("-------Agregar producto-------\n".upper())
+
             continuar = "si"
+
             while continuar in ("si", "s", "yes"):
+
                 nombre = pedir_nombre()
                 print()
                 precio = pedir_float("Ingrese el precio de su producto $")
                 print()
                 cantidad = pedir_int("Ingrese la cantidad de su producto: ")
                 print()
+
                 agregar_producto(inventario, nombre, precio, cantidad)
-                print(f"Producto agregado correctamente\n")
+
+                exito(f"Producto agregado correctamente\n")
 
                 continuar = input("¿Quiere agregar otro producto? (Si/No): ").lower()
 
@@ -107,43 +122,69 @@ def menu():
 
                 if continuar not in ("si", "s", "yes"):
                     print("------Volviendo al menu-------\n".upper())
-            
+
         elif accion == 2:
             mostrar_inventario(inventario)
 
         elif accion == 3:
             print("-------Buscar producto-------\n".upper())
+            
             continuar = "si"
+            
             while continuar in ("si", "s", "yes"):
+                
                 nombre = pedir_nombre()
                 producto = buscar_producto(inventario, nombre)
-                
+
                 if producto:
                     print(f"{producto}\n")
                 else:
-                    print(f"Producto no encontrado\n")
-
-                continuar = input("¿Quiere buscar otro producto? (Si/No): ").lower()
-
-                print()
+                    alerta(f"Producto no encontrado\n")
                 
+                continuar = input("¿Quiere buscar otro producto? (Si/No): ").lower()
+                print()
+
                 if continuar not in ("si", "s", "yes"):
                     print("------Volviendo al menu-------\n".upper())
 
         elif accion == 4:
             print("------Actulizar producto------\n".upper())
+            
             continuar = "si"
+            
             while continuar in ("si", "s", "yes"):
+                
                 nombre = pedir_nombre()
-                nuevo_precio = input("Nuevo precio (enter para omitir): $")
-                print()
-                nueva_cantidad = input("Nueva cantidad (enter para omitir): ")
-                print()
+                producto = buscar_producto(inventario, nombre)
+                
+                if producto is None:
+                    alerta(f"Producto no encontrado\n")
 
-                nuevo_precio = float(nuevo_precio) if nuevo_precio else None
-                nueva_cantidad = int(nueva_cantidad) if nueva_cantidad else None
+                else:
+                    editar_precio = input("Quieres editar el precio del producto? (Si/No):").lower()
+                    
+                    if editar_precio == "si":
+                        print()
 
-                actualizar_producto(inventario,nombre,nuevo_precio, nueva_cantidad)
+                        nuevo_precio = pedir_float("Ingrese el nuevo precio de su producto: $")
+
+                        print()
+                    else:
+                        nuevo_precio = None
+
+                    editar_cantidad = input("Quieres editar la cantidad del producto? (Si/No):").lower()
+
+                    if editar_cantidad == "si":
+                        print()
+                        nueva_cantidad = pedir_int("Ingrese la nueva cantidad de su producto: ")
+                        print()
+                    else:
+                        nueva_cantidad = None
+
+                    if nuevo_precio is not None or nueva_cantidad is not None:
+                        actualizar_producto(inventario, nombre, nuevo_precio, nueva_cantidad)
+                    else:
+                        alerta("No se realizaron cambios\n")
 
                 continuar = input("¿Quiere actualizar otro producto? (Si/No): ").lower()
 
@@ -154,13 +195,17 @@ def menu():
 
         elif accion == 5:
             print("------Eliminar producto------\n".upper())
+            
             continuar = "si"
+            
             while continuar in ("si", "s", "yes"):
+                
                 nombre = pedir_nombre()
+                
                 eliminar_producto(inventario, nombre)
 
                 continuar = input("¿Quiere eliminar otro producto? (Si/No): ").lower()
-                
+
                 print()
 
                 if continuar not in ("si", "s", "yes"):
@@ -183,7 +228,7 @@ def menu():
             print("------Volviendo al menu-------\n".upper())
 
         elif accion == 9:
-            print("Saliendo del inventario\n".upper())
+            exito("Saliendo del inventario\n".upper())
         else:
-            print("Error: Opción inválida\n")
-
+            error("Error: Opción inválida\n")
+            

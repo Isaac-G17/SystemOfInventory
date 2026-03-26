@@ -1,8 +1,4 @@
-inventario = [
-    {"nombre": "Queso", "precio": 200, "cantidad": 5},
-    {"nombre": "lulo", "precio": 300, "cantidad": 4},
-]
-
+from src.style_msg import exito,alerta
 
 def agregar_producto(inventario, nombre, precio, cantidad):
     """
@@ -37,7 +33,7 @@ def mostrar_inventario(inventario):
     print("-----Mostrando inventario-----\n".upper())
     
     if not inventario:
-        print("Inventario Vacio\n")
+        alerta("Inventario Vacio\n")
 
     else:
         print("+---------------+-------------+-----------+")
@@ -82,17 +78,13 @@ def actualizar_producto(inventario, nombre, nuevo_precio=None, nueva_cantidad=No
     """
     producto = buscar_producto(inventario, nombre)
 
-    if producto is None:
-        print("Producto no encontrado\n")
-        return
-
     if nuevo_precio is not None:
         producto["precio"] = nuevo_precio
 
     if nueva_cantidad is not None:
         producto["cantidad"] = nueva_cantidad
 
-    print("Producto actualizado correctamente\n")
+    exito("Producto actualizado correctamente\n")
 
 def eliminar_producto(inventario, nombre):
     """
@@ -109,9 +101,9 @@ def eliminar_producto(inventario, nombre):
 
     if producto:
         inventario.remove(producto)
-        print("Producto eliminado correctamente\n")
+        exito("Producto eliminado correctamente\n")
     else:
-        print("Producto no encontrado\n")
+        alerta("Producto no encontrado\n")
 
 def calcular_estadisticas(inventario):
     """
