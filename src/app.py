@@ -1,18 +1,28 @@
 from src.servicios import *
 from src.style_msg import exito,alerta,error
+from src.archivos import guardar_csv,cargar_csv
 
+# Inventario inicial de prueba
 inventario = [
-    {"nombre": "Queso", "precio": 200, "cantidad": 5},
-    {"nombre": "lulo", "precio": 300, "cantidad": 4},
+    {"nombre": "Queso", "precio": 200.0, "cantidad": 5},
+    {"nombre": "lulo", "precio": 300.0, "cantidad": 4},
 ]
 
 
 def pedir_nombre():
     """
-    Solicita un nombre válido (solo letras y espacios).
+    Solicita al usuario el nombre de un producto con validación.
+
+    Reglas:
+    - No puede estar vacío.
+    - Solo permite letras y espacios.
+
+    Retorna:
+        str: Nombre válido en minúsculas.
     """
     nombre = ""
 
+     # Bucle para validar el nombre hasta que sea válido
     while nombre == "" or not nombre.replace(" ", "").isalpha():
         nombre = input("Ingrese el nombre del producto: ").lower()
         print()
@@ -26,8 +36,17 @@ def pedir_nombre():
 
 
 def pedir_float(mensaje):
-    valor = -1
+    """
+    Solicita un número decimal válido (float) mayor a 0.
 
+    Parámetros:
+        mensaje (str): Texto que se muestra al usuario.
+
+    Retorna:
+        float: Valor válido ingresado.
+    """
+    # Bucle para validar el valor hasta que sea correcto
+    valor = -1
     while valor <= 0:
         try:
             valor = float(input(mensaje))
@@ -51,8 +70,8 @@ def pedir_int(mensaje):
     Retorna:
         int: Valor ingresado válido.
     """
+    # Bucle para validar la cantidad hasta que sea correcto
     valor = -1
-
     while valor <= 0:
         try:
             valor = int(input(mensaje))
@@ -74,8 +93,8 @@ def menu():
     Retorna:
         None
     """
+    # Menú principal hasta que el usuario decida salir
     accion = 0
-
     while accion != 9:
 
         print("-Menu-----------------------------".upper())
@@ -97,7 +116,7 @@ def menu():
         except ValueError:
             error("Opción inválida\n")
             continue
-
+        # Agregar producto
         if accion == 1:
             print("-------Agregar producto-------\n".upper())
 
@@ -106,7 +125,7 @@ def menu():
             while continuar in ("si", "s", "yes"):
 
                 nombre = pedir_nombre()
-                print()
+                
                 precio = pedir_float("Ingrese el precio de su producto $")
                 print()
                 cantidad = pedir_int("Ingrese la cantidad de su producto: ")
@@ -122,10 +141,12 @@ def menu():
 
                 if continuar not in ("si", "s", "yes"):
                     print("------Volviendo al menu-------\n".upper())
-
+        # Mostrar inventario
         elif accion == 2:
+            print("-----Mostrando inventario-----\n".upper())
             mostrar_inventario(inventario)
-
+            print("------Volviendo al menu-------\n".upper())
+        # Buscar producto
         elif accion == 3:
             print("-------Buscar producto-------\n".upper())
             
@@ -146,7 +167,7 @@ def menu():
 
                 if continuar not in ("si", "s", "yes"):
                     print("------Volviendo al menu-------\n".upper())
-
+        # Actualizar producto
         elif accion == 4:
             print("------Actulizar producto------\n".upper())
             
@@ -192,7 +213,7 @@ def menu():
 
                 if continuar not in ("si", "s", "yes"):
                     print("------Volviendo al menu-------\n".upper())
-
+        # Eliminar producto
         elif accion == 5:
             print("------Eliminar producto------\n".upper())
             
@@ -210,7 +231,7 @@ def menu():
 
                 if continuar not in ("si", "s", "yes"):
                     print("------Volviendo al menu-------\n".upper())
-
+        # Estadisticas de inventario 
         elif accion == 6:
             print("----Estadisticas de inventario----\n".upper())
 
@@ -226,7 +247,60 @@ def menu():
                 print("Inventario vacío\n")
 
             print("------Volviendo al menu-------\n".upper())
+        # Guardar datos en archivos CSV
+        elif accion == 7:
+            print("-------Guardando archivo-------\n".upper())
 
+            ruta = input("Ingrese la ruta del archivo (ej: inventario.csv): ")
+            print()
+
+            guardar_csv(inventario, ruta)
+
+            print("------Volviendo al menu-------\n".upper())
+        # Cargar datos en archivos CSV
+        elif accion == 8:
+            print("-------Cargando archivo-------\n".upper())
+            ruta = input("Ingrese la ruta del archivo: ")
+
+            print()
+
+            nuevos, errores = cargar_csv(ruta)
+
+            if not nuevos:
+                print("No se cargaron productos.\n")
+                print("------Volviendo al menu-------\n".upper())
+            else:
+                opcion = input("¿Sobrescribir inventario actual? (Si/No): ").strip().lower()
+
+                if opcion in ("si", "s", "yes"):
+                    inventario.clear()
+                    inventario.extend(nuevos)
+                    modo = "Sobrescrito"
+
+                else:
+                    # FUSIÓN
+                    for nuevo in nuevos:
+                        existente = buscar_producto(inventario, nuevo["nombre"])
+
+                        if existente:
+                            existente["cantidad"] += nuevo["cantidad"]
+
+                            # Si el precio es diferente, actualizarlo
+                            if existente["precio"] != nuevo["precio"]:
+                                existente["precio"] = nuevo["precio"]
+                        else:
+                            inventario.append(nuevo)
+
+                    modo = "Fusionado"
+
+                # RESUMEN FINAL
+                print()
+                print("--- Resumen de carga ---".upper())
+                print(f"Productos cargados: {len(nuevos)}")
+                print(f"Filas inválidas omitidas: {errores}")
+                print(f"Modo: {modo}")
+                print("--- Volviendo al menu ---\n".upper())
+        # Salir del inventario
         elif accion == 9:
             exito("Saliendo del inventario\n".upper())
         else:

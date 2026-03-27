@@ -30,21 +30,18 @@ def mostrar_inventario(inventario):
     Retorna:
         None
     """
-    print("-----Mostrando inventario-----\n".upper())
-    
     if not inventario:
         alerta("Inventario Vacio\n")
 
     else:
-        print("+---------------+-------------+-----------+")
+        print("-------------------------------------------")
         print("| PRODUCTO      | PRECIO      | CANTIDAD  |")
-        print("+---------------+-------------+-----------+")
+        print("|---------------|-------------|-----------|")
         for p in inventario:
             print(
                 f"| {p['nombre']:<13} | {f'${p['precio']:.2f}':>11} | {p['cantidad']:>9} |"
             )
-        print("+---------------+-------------+-----------+\n")
-    print("------Volviendo al menu-------\n".upper())
+        print("-------------------------------------------\n")
 
 def buscar_producto(inventario, nombre):
     """
@@ -77,6 +74,10 @@ def actualizar_producto(inventario, nombre, nuevo_precio=None, nueva_cantidad=No
         None
     """
     producto = buscar_producto(inventario, nombre)
+    
+    if producto is None:
+        alerta("Producto no encontrado\n")
+        return 
 
     if nuevo_precio is not None:
         producto["precio"] = nuevo_precio
@@ -114,6 +115,7 @@ def calcular_estadisticas(inventario):
 
     Retorna:
         dict: Contiene:
+            - productos_registrados (int)
             - unidades_totales (int)
             - valor_total (float)
             - producto_mas_caro (dict)

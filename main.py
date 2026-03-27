@@ -1,8 +1,8 @@
 # Llamando funciones del sistema de inventario
-from src.app import *
+from src.app import menu
 
 # Sistema de inventario de productos
-print()
-print("Sistema de inventario".upper())
-
-menu()
+if __name__ == "__main__":
+    print()
+    print("SISTEMA DE INVENTARIO")
+    menu()
