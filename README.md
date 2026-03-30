@@ -60,7 +60,7 @@ Sigue estos pasos para instalar y ejecutar el proyecto en tu equipo:
 ### Clonar el repositorio
 
 ```bash
-git clone https://github.com/tu-usuario/proyecto_inventario.git
+git clone https://github.com/Isaac-G17/proyecto_inventario.git
 ```
 ### Abre la carpeta del proyecto
 ```bash
